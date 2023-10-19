@@ -1,40 +1,73 @@
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
+import java.io.FileInputStream;
+import java.sql.*;
+import java.util.Properties;
 
+import static junit.framework.Assert.assertEquals;
 
 public class SqlTest {
-    public class ProduceReports {
+    private static final String DB_URL = "jdbc:mysql://localhost:3306/project2";
+    private static String DB_USER;
+    private static String DB_PASSWORD;
 
-        private static final String DB_URL = "jdbc:mysql://localhost:3306/SQLFile8*";
-        private static final String DB_USER = "root";
-        private static final String DB_PASSWORD = "Samanthe@0823";
+    @BeforeAll
+    public static void setup() {
+        // Load database credentials from config.properties
+        Properties props = new Properties();
+        try (FileInputStream input = new FileInputStream("config.properties")) {
+            props.load(input);
+            DB_USER = props.getProperty("DB_USER");
+            DB_PASSWORD = props.getProperty("DB_PASSWORD");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-        private static String customerId;
-        private static String connection1;
+    @Test
+    public void testTotalNumberOfCustomers() {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery("SELECT COUNT(*) AS customerCount FROM Customers");
+            resultSet.next();
+            int actualCustomerCount = resultSet.getInt("customerCount");
+            assertEquals(2, actualCustomerCount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-        private static void executeAndPrintQuery(Connection connection, String query, long customerId) throws SQLException {
-            try (PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-                preparedStatement.setLong(1, customerId);  // Set the customer ID parameter
-                try (ResultSet resultSet = preparedStatement.executeQuery()) {
-                    while (resultSet.next()) {
-                        // Print the results in a human-readable manner
-                        System.out.println(resultSet.getString(1));
-                    }
-                }
-            }
-            // Report 5: Overview of all transactions for all checking accounts
-            executeAndPrintQuery(connection, "SELECT DISTINCT AccountNumber_FK FROM Transactions WHERE CustomerIdentification_FK = '8505134556789' AND AccountNumber_FK LIKE '246891567987'", customerId);
+    @Test
+    public void testNumberOfAccountsForJessica() {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT COUNT(*) AS accountCount FROM BankAccounts WHERE CustomerIdentification_FK IN (SELECT CustomerIdentification FROM Customers WHERE FirstName = 'Jessica')");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            int actualAccountCount = resultSet.getInt("accountCount");
+            assertEquals(2, actualAccountCount);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
-// Report 6: Transaction details for a specific date range
-            executeAndPrintQuery(connection, "SELECT TransactionDate, Amount FROM Transactions WHERE CustomerIdentification_FK = ? AND TransactionDate BETWEEN '2023-07-11' AND '2023-07-15'", customerId);
+    @Test
+    public void testTotalOfAllTransactionsForAccount() {
+        try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT SUM(Amount) AS totalAmount FROM Transactions WHERE AccountNumber_FK = ?");
+            preparedStatement.setString(1, "YOUR_ACCOUNT_ID_HERE");
+            ResultSet resultSet = preparedStatement.executeQuery();
+            resultSet.next();
+            double actualTotalAmount = resultSet.getDouble("totalAmount");
+            assertEquals(0.0, actualTotalAmount, 0.001); // Use a delta to compare double values
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
 
-// Report 7: Transaction types for a specific date range
-            executeAndPrintQuery(connection, "SELECT TransactionDate, TransactionType FROM Transactions WHERE CustomerIdentification_FK = ? AND TransactionDate BETWEEN '2023-07-11' AND '2023-07-15'", customerId);
 
-        }}}
+
 
 
 
