@@ -24,7 +24,7 @@ public class SqlTest {
             e.printStackTrace();
         }
     }
-
+// code is dynamic because it connects to a database and retrieves data from it at runtime. The database connection, the execution of the SQL query, and the retrieval of results are all happening when the test is run.
     @Test
     public void testTotalNumberOfCustomers() {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
@@ -66,6 +66,7 @@ public class SqlTest {
     }
 }
 
+//064 618 7329
 
 
 
