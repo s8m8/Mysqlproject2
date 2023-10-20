@@ -35,7 +35,8 @@ public class ProduceReports {
     }
 
     private static void produceReports(Connection connection, long customerId) throws SQLException {
-// Create a SQL statement
+
+        // Create a SQL statement
         Statement statement = connection.createStatement();
 // Report 1: Address data for the given customer ID
         String query1 = "SELECT Address FROM Customers WHERE CustomerIdentification = '" + customerId + "'";
@@ -71,7 +72,6 @@ public class ProduceReports {
         connection.close();
     }
 }
-
 
 
 
