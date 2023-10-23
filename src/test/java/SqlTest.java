@@ -11,7 +11,7 @@ public class SqlTest {
     private static final String DB_URL = "jdbc:mysql://localhost:3306/project2";
     private static String DB_USER;
     private static String DB_PASSWORD;
-
+// This method sets up the database connection using credentials from a properties file.
     @BeforeAll
     public static void setup() {
         // Load database credentials from config.properties
@@ -24,7 +24,9 @@ public class SqlTest {
             e.printStackTrace();
         }
     }
-// code is dynamic because it connects to a database and retrieves data from it at runtime. The database connection, the execution of the SQL query, and the retrieval of results are all happening when the test is run.
+// code is dynamic because it connects to a database and retrieves data from it at runtime. 
+//The database connection, the execution of the SQL query, and the retrieval of results are all happening when the test is run.
+// This test checks the total number of customers in the database
     @Test
     public void testTotalNumberOfCustomers() {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
@@ -37,7 +39,7 @@ public class SqlTest {
             e.printStackTrace();
         }
     }
-
+// This test checks the number of accounts for a customer with the first name 'Jessica'.
     @Test
     public void testNumberOfAccountsForJessica() {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
@@ -51,6 +53,7 @@ public class SqlTest {
         }
     }
 
+    // This test checks the total of all transactions for a specific account
     @Test
     public void testTotalOfAllTransactionsForAccount() {
         try (Connection connection = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD)) {
