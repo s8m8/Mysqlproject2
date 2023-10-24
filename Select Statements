@@ -1,0 +1,134 @@
+/*   
+
+1. Given a customer ID, I want to see all their address data
+2. Given a customer ID, I want to see the total balance for all their accounts
+3. Given a customer ID, I want to see an overview of all transactions for all their CHECKING accounts, showing at least the following fields for each transaction:
+⦁ The account number
+⦁ The date of the transaction
+⦁ The amount of the transaction
+⦁ The type of transaction (WITHDRAWAL or DEPOSIT or ONLINE PURCHASE)
+*/
+
+-- 1.
+
+SELECT Address From Customers
+WHERE CustomerIdentification = '8505134556789';
+
+-- 2.1 Balances of all accounts for specific client
+
+SELECT AccountNumber, AccountType, CurrentBalance, CustomerIdentification_FK
+FROM BankAccounts
+WHERE CustomerIdentification_FK = '8505134556789';
+
+-- 2.2 Sum of all balances for specific client
+
+SELECT SUM(CurrentBalance) AS TotalBalance
+FROM BankAccounts
+WHERE CustomerIdentification_FK = '8505134556789';
+
+-- 3.
+SELECT * FROM Transactions
+WHERE CustomerIdentification_FK = '8505134556789';
+
+SELECT * FROM BankAccounts
+WHERE AccountType = 'Cheque' AND CustomerIdentification_FK = '8505134556789';
+
+SELECT  BankAccounts.AccountNumber,BankAccounts.AccountType, Transactions.TransactionDate, Transactions.Amount TransactionAmount, Transactions.TransactionType
+FROM Transactions
+INNER JOIN BankAccounts ON Transactions.CustomerIdentification_FK = BankAccounts.CustomerIdentification_FK
+WHERE Transactions.CustomerIdentification_FK = '8505134556789'
+AND BankAccounts.AccountType = 'Cheque';
+
+
+
+
+
+
+
+
+/*
+
+SELECT AccountNumber, AccountType, CurrentBalance, CustomerIdentification_FK
+FROM BankAccounts
+WHERE CustomerIdentification_FK = '7103315534765';
+
+
+
+SELECT DISTINCT AccountNumber_FK
+FROM TRANSACTIONS 
+WHERE CustomerIdentification_FK = 8505134556789 
+AND AccountNumber_FK LIKE '234789123321';
+
+
+SELECT DISTINCT AccountNumber_FK
+FROM TRANSACTIONS 
+WHERE CustomerIdentification_FK = 7103315534765
+AND AccountNumber_FK LIKE '246891567987';
+
+
+SELECT TransactionDate
+FROM transactions
+WHERE AccountNumber_FK = '234789123321' 
+AND CustomerIdentification_FK = '8505134556789';
+
+
+SELECT TransactionDate
+FROM transactions
+WHERE AccountNumber_FK = '246891567987' 
+AND CustomerIdentification_FK = '7103315534765';
+
+SELECT TransactionDate, Amount
+FROM transactions
+WHERE AccountNumber_FK = '234789123321' 
+AND CustomerIdentification_FK = '8505134556789'
+AND TransactionDate BETWEEN '2023-08-12' AND '2023-08-16';
+
+
+SELECT TransactionDate, Amount
+FROM transactions
+WHERE AccountNumber_FK = '246891567987' 
+AND CustomerIdentification_FK = '7103315534765'
+AND TransactionDate BETWEEN '2023-07-11' AND '2023-07-15';
+
+
+SELECT TransactionDate, TransactionType
+FROM transactions
+WHERE AccountNumber_FK = '234789123321' 
+AND CustomerIdentification_FK = '8505134556789'
+AND TransactionDate BETWEEN '2023-08-12' AND '2023-08-16';
+
+
+SELECT TransactionDate, TransactionType
+FROM transactions
+WHERE AccountNumber_FK = '246891567987' 
+AND CustomerIdentification_FK = '7103315534765'
+AND TransactionDate BETWEEN '2023-07-11' AND '2023-07-15';
+
+
+
+SELECT *
+FROM Transactions
+WHERE AccountNumber_FK = '246891567987' 
+AND CustomerIdentification_FK = '7103315534765'
+AND TransactionType = 'Withdrawal';
+  
+  
+  SELECT *
+FROM Transactions
+WHERE AccountNumber_FK = '246891567987' 
+  AND CustomerIdentification_FK = '7103315534765'
+  AND TransactionType = 'deposit';
+  
+SELECT *
+FROM Transactions
+WHERE AccountNumber_FK = '234789123321'
+AND CustomerIdentification_FK = '8505134556789'
+AND TransactionType = 'Deposit';
+  
+
+SELECT CurrentBalance
+FROM Transactions
+WHERE AccountNumber ='246891567987' and TransactionDate = '2023-07-15'
+;
+
+*/
