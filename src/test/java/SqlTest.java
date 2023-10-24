@@ -1,19 +1,20 @@
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import java.io.FileInputStream;
 import java.sql.*;
 import java.util.Properties;
 
 import static junit.framework.Assert.assertEquals;
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class SqlTest {
-    private static final String DB_URL = "jdbc:mysql://localhost:3306/project2";
-    private static String DB_USER;
-    private static String DB_PASSWORD;
+    private  final String DB_URL = "jdbc:mysql://localhost:3306/project2";
+    private  String DB_USER;
+    private  String DB_PASSWORD;
 // This method sets up the database connection using credentials from a properties file.
     @BeforeAll
-    public static void setup() {
+    public void setup() {
         // Load database credentials from config.properties
         Properties props = new Properties();
         try (FileInputStream input = new FileInputStream("config.properties")) {
