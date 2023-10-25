@@ -29,7 +29,7 @@ public class ProduceReports {
                 System.err.println("Error loading properties file: " + e.getMessage());
                 return;
             }
-            // retrieving the database username and password from the properties you loaded earlier.
+            //This line retrieves the database username and password from the properties loaded earlier.
             String DB_USER = props.getProperty("DB_USER");
             String DB_PASSWORD = props.getProperty("DB_PASSWORD");
 
